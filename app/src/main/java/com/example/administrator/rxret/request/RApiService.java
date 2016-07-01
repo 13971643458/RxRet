@@ -14,6 +14,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -67,6 +68,28 @@ public interface RApiService {
      * ResponseCode这个是返回的实体类
      */
     Call<ResponseCode> checkIn(@Part("image\"; filename=\"文件名.jpg") RequestBody file);
+
+
+    @Multipart
+    @POST("/upload")
+//    @Headers()
+    Call<String> uploadImage(@Part("fileName") String description, @Part("file\"; filename=\"image.png\"")RequestBody ...imgs);
+
+    /**
+     * 上传三张图片
+     * @param description
+     * @param imgs
+     * @param imgs1
+     * @param imgs3
+     * @return
+     */
+    @Multipart
+    @POST("/upload")
+    Call<String> uploadImage(@Part("fileName") String description,
+                             @Part("file\"; filename=\"image.png\"")RequestBody imgs,
+                             @Part("file\"; filename=\"image.png\"")RequestBody imgs1,
+                             @Part("file\"; filename=\"image.png\"")RequestBody imgs3);
+
 
     /*******   RxJava   *******/
     /**

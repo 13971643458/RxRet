@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        button=(Button)findViewById(R.id.bt_test);
+        button = (Button) findViewById(R.id.bt_test);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /****              Retrofit使用              ****/
+    /****
+     * Retrofit使用
+     ****/
     private void get() {
         RApiService service = RRetrofit.create(RApiService.class);
         /*get请求*/
@@ -56,17 +58,17 @@ public class MainActivity extends AppCompatActivity {
         api.enqueue(new Callback<ResponseBean>() {
             @Override
             public void onResponse(Call<ResponseBean> call, Response<ResponseBean> response) {
-                Log.v("INFO","get-->\n" + response.body().toString());
+                Log.v("INFO", "get-->\n" + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<ResponseBean> call, Throwable t) {
-                Log.e("error","get error-->\n" + t.toString());
+                Log.e("error", "get error-->\n" + t.toString());
             }
         });
     }
 
-    private void getMap(){
+    private void getMap() {
         Map<String, String> params = new HashMap<>();
         params.put("bbb", "bbb_v");
         params.put("aaa", "aaa_v");
@@ -75,19 +77,19 @@ public class MainActivity extends AppCompatActivity {
         apiString.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.v("INFO","getMap-->\n" + response.body().toString());
+                Log.v("INFO", "getMap-->\n" + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("error","getMap error-->\n" + t.toString());
+                Log.e("error", "getMap error-->\n" + t.toString());
             }
         });
     }
 
-    private void postJavaBean(){
+    private void postJavaBean() {
         RApiService service = RRetrofit.create(RApiService.class);
-        RequestBean requestBean=new RequestBean();
+        RequestBean requestBean = new RequestBean();
         requestBean.key1 = "KEY1";
         requestBean.key2 = "KEY2";
         requestBean.key3 = "KEY3";
@@ -96,19 +98,19 @@ public class MainActivity extends AppCompatActivity {
         postApi.enqueue(new Callback<ResponseBean>() {
             @Override
             public void onResponse(Call<ResponseBean> call, Response<ResponseBean> response) {
-                Log.v("INFO","post-->\n" + response.body().toString());
+                Log.v("INFO", "post-->\n" + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<ResponseBean> call, Throwable t) {
-                Log.e("error","post error-->\n" + t.toString());
+                Log.e("error", "post error-->\n" + t.toString());
             }
         });
     }
 
-    private void postString(){
+    private void postString() {
         RApiService service = RRetrofit.create(RApiService.class);
-        RequestBean requestBean=new RequestBean();
+        RequestBean requestBean = new RequestBean();
         requestBean.key1 = "KEY1";
         requestBean.key2 = "KEY2";
         requestBean.key3 = "KEY3";
@@ -117,56 +119,59 @@ public class MainActivity extends AppCompatActivity {
         postApi.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.v("INFO","postString-->\n" + response.body().toString());
+                Log.v("INFO", "postString-->\n" + response.body().toString());
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("error","postString error-->\n" + t.toString());
+                Log.e("error", "postString error-->\n" + t.toString());
             }
         });
     }
 
-    private void upload(){
+    private void upload() {
 
-        try {
-            RequestBody staffPhone = RequestBody.create(MediaType.parse("text/plain"), "13971643458");
-            RequestBody time = RequestBody.create(MediaType.parse("text/plain"), "时间");
-            RequestBody address = RequestBody.create(MediaType.parse("text/plain"), "地点");
-            RequestBody type = RequestBody.create(MediaType.parse("text/plain"), "类型");
+        File file1 = new File("/storage/emulated/0/sc/share.png");
+        File file = new File("/storage/emulated/0/Pictures/ScreenShots/Screenshot_20160128-140709.png");
+        RequestBody staffPhone = RequestBody.create(MediaType.parse("text/plain"), "13971643458");
+        RequestBody time = RequestBody.create(MediaType.parse("text/plain"), "时间");
+        RequestBody address = RequestBody.create(MediaType.parse("text/plain"), "地点");
+        RequestBody type = RequestBody.create(MediaType.parse("text/plain"), "类型");
 
-            Map<String, RequestBody> map = new HashMap<>();
-            map.put("staffPhone",staffPhone);
-            map.put("checkTime",time);
-            map.put("checkAddress",address);
-            map.put("checkType",type);
+        RequestBody requestBody1 = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestBody2 = RequestBody.create(MediaType.parse("multipart/form-data"), file1);
 
-            File imgFile=new File("");
-            if (imgFile != null) {
-                RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), imgFile);
-                map.put("image\"; filename=\""+imgFile.getName()+"", fileBody);
-            }
+        Map<String, RequestBody> map = new HashMap<>();
+        map.put("staffPhone", staffPhone);
+        map.put("checkTime", time);
+        map.put("checkAddress", address);
+        map.put("checkType", type);
 
+        File imgFile = new File("");
+        if (imgFile != null) {
+            RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), imgFile);
+            map.put("image\"; filename=\"" + imgFile.getName() + "", fileBody);
             RApiService service = RRetrofit.create(RApiService.class);
 
-            service.checkIn(new RequestBody() {
+            Call<String> api = service.uploadImage("pa1_value", fileBody);
+            api.enqueue(new Callback<String>() {
                 @Override
-                public MediaType contentType() {
-                    return null;
+                public void onResponse(Call<String> call, Response<String> response) {
+
                 }
 
                 @Override
-                public void writeTo(BufferedSink sink) throws IOException {
+                public void onFailure(Call<String> call, Throwable t) {
 
                 }
             });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
-    /****      RxJava的使用       ****/
-    private void getRxApiString(){
+    /****
+     * RxJava的使用
+     ****/
+    private void getRxApiString() {
         RApiService service = RRetrofit.create(RApiService.class);
         Map<String, String> params = new HashMap<>();
         params.put("bbb", "bbb_v");
@@ -174,18 +179,18 @@ public class MainActivity extends AppCompatActivity {
         service.getRxApiString(params).subscribeOn(Schedulers.newThread())/*.observeOn(AndroidSchedulers.mainThread())*/.subscribe(new Subscriber<ResponseBody>() {
             @Override
             public void onCompleted() {
-                Log.v("INFO","getRxApiString onCompleted-->\n");
+                Log.v("INFO", "getRxApiString onCompleted-->\n");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e("error","getRxApiString error-->\n" + e.getMessage());
+                Log.e("error", "getRxApiString error-->\n" + e.getMessage());
             }
 
             @Override
             public void onNext(ResponseBody responseBody) {
                 try {
-                    Log.v("INFO","getRxApiString onNext-->\n" + responseBody.toString());
+                    Log.v("INFO", "getRxApiString onNext-->\n" + responseBody.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -193,24 +198,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void postRxApiString(){
+    private void postRxApiString() {
         RApiService service = RRetrofit.create(RApiService.class);
-        RequestBean requestBean=new RequestBean();
+        RequestBean requestBean = new RequestBean();
         service.postRxApiString(requestBean).subscribeOn(Schedulers.newThread())/*.observeOn(AndroidSchedulers.mainThread())*/.subscribe(new Subscriber<ResponseBean>() {
             @Override
             public void onCompleted() {
-                Log.v("INFO","postRxApiString onCompleted-->\n");
+                Log.v("INFO", "postRxApiString onCompleted-->\n");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e("error","postRxApiString error-->\n" + e.getMessage());
+                Log.e("error", "postRxApiString error-->\n" + e.getMessage());
             }
 
             @Override
             public void onNext(ResponseBean responseBean) {
                 try {
-                    Log.v("INFO","postRxApiString onNext-->\n" + responseBean.toString());
+                    Log.v("INFO", "postRxApiString onNext-->\n" + responseBean.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
